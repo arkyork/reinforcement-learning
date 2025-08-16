@@ -74,7 +74,23 @@ class GridWorld:
     def reward(self,state,action,next_state):
         return self.reward_mapping[next_state]
     
-    
+    # ワンステップだけ更新評価
+    def eval_one(self,pi,V,env,gamma=0.9):
+        for state in self.states():
+            if state == env.goal_state:
+                V[state] = 0
+                # ゴールは0
+                continue
+            action_probs = pi[state]
+            new_V = 0
+
+            for action,action_prob in action_probs.items():
+                next_state = env.next_state(state,action)
+                r = env.reward(state,action,next_state)
+
+                new_V += action_prob +(r + gamma * V[next_state])
+            V[state] = new_V
+
     # 価値関数の可視化
     def render_value_function(self, V):
         # Vは {(i,j): value} の辞書を想定
