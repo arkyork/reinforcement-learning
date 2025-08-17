@@ -188,5 +188,40 @@ class GridWorld:
             
             pi = new_pi
         return pi
-    
-    
+    def value_itr_one(self,V,env,gamma):
+        for state in env.states():
+            if state == env.goal_state:
+                V[state] = 0
+                # ゴールは0
+                continue
+            # 方策反復だと　action_probsやpiが必要
+            action_values = []
+
+            for action in env.actions():
+                next_state = env.next_state(state,action)
+                r = env.reward(state,action,next_state)
+
+                v = (r + gamma * V[next_state])
+
+                action_values.append(v)
+            V[state] = max(action_values)
+        return V
+    # 価値反復
+    def value_itr(self,V,env,gamma,thershold = 0.001):
+        # 方策は必要ない
+
+        while True:
+            
+            old_V = V.copy()
+
+            V = self.value_itr_one(V,env,gamma)
+
+            delta = 0
+            for state in V.keys():
+                temp = abs(V[state]-old_V[state])
+                if delta < temp:
+                    delta = temp
+            if delta < thershold:
+                break
+
+        return V
