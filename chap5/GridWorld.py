@@ -73,10 +73,10 @@ class GridWorld:
 
         # xとy座標が範囲内に収まっているか？
 
-        next_x ,next_y = next_state
+        next_y ,next_x = next_state
 
         # 収まっていなければ現在の位置へ
-        if (next_x < 0 or next_x >= self.height) or (next_y < 0 or next_y >= self.width):
+        if (next_x < 0 or next_x >= self.width) or (next_y < 0 or next_y >= self.height):
             next_state = state
         elif next_state == self.obstacle_state:
             next_state = state
@@ -236,4 +236,11 @@ class GridWorld:
         goal_done = (next_state == self.goal_state)
         self.agent_state = next_state
 
-        return next_state, reward, goal_done
+        return next_state,reward,goal_done
+    
+    def reset(self):
+        # エージェントの位置をスタートの位置に
+        self.agent_state = self.start_state
+        return self.agent_state
+    
+
